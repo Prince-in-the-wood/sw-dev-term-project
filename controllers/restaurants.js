@@ -56,3 +56,16 @@ exports.getRestaurants = async (req, res, next) => {
         res.status(400).json({ success: false });
     }
 }
+
+exports.getRestaurant = async (req, res, next) => {
+    try {
+        const restaurant = await Restaurant.findById(req.params.id);
+
+        if (!restaurant)
+            return res.status(404).json({ success: false });
+
+        res.status(200).json({ success: true, data: restaurant });
+    } catch (error) {
+        res.status(400).json({ success: false });
+    }
+}
