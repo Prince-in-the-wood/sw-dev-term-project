@@ -11,7 +11,7 @@ const cors = require('cors');
 
 //Route file
 const reservation = require('./routes/reservations');
-// const restaurant = require('./routes/restaurants');
+const restaurant = require('./routes/restaurants');
 // const auth = require('./routes/auth');
 
 //load env vars
@@ -42,7 +42,7 @@ app.use(cors());
 
 //Mount routers
 app.use('/api/v1/reservations', reservation);
-// app.use('/api/v1/restaurant', restaurant);
+app.use('/api/v1/restaurants', restaurant);
 // app.use('/api/v1/auth', auth);
 
 const PORT = process.env.PORT || 5000;
