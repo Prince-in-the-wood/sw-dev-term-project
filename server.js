@@ -2,6 +2,13 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const { xss } = require('express-xss-sanitizer');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
+const cors = require('cors');
+
 //Route file
 const reservation = require('./routes/reservations');
 // const restaurant = require('./routes/restaurants');
@@ -17,6 +24,21 @@ const app = express();
 
 //Body parser
 app.use(express.json());
+
+//More security
+app.use(mongoSanitize());
+app.use(helmet());
+app.use(xss());
+
+const limiter = rateLimit({
+    windowsMs: 10 * 60 * 1000,
+    max: 100
+});
+app.use(limiter);
+
+app.use(hpp());
+app.use(cors());
+
 
 //Mount routers
 app.use('/api/v1/reservations', reservation);
