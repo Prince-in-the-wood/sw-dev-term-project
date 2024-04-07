@@ -15,7 +15,7 @@ const ReservationSchema = new mongoose.Schema({
         ref: "Restaurant",
         required: true,
     },
-    noOfTabel: {
+    noOfTable: {
         type: Number,
         required: true,
         validate: {
