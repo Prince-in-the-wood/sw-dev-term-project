@@ -32,7 +32,7 @@ exports.register = async (req, res, next) => {
 
         sendTokenResponse(user, 200, res)
     } catch (error) {
-        res.status(400).json({ success: false });
+        res.status(400).json({ success: false, msg: 'Error occurred during registeration' });
     }
 }
 
@@ -58,7 +58,7 @@ exports.login = async (req, res, next) => {
 
         sendTokenResponse(user, 200, res);
     } catch (error) {
-        return res.status(400).json({ success: false, msg: "Cannot convert email or password to string" })
+        return res.status(400).json({ success: false, msg: 'Cannot convert email or password to string' })
     }
 
 }

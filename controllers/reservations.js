@@ -28,7 +28,7 @@ exports.getReservations = async (req, res, next) => {
 
         res.status(200).json({ success: true, count: reservations.length, data: reservations });
     } catch (error) {
-        res.status(500).json({ success: false });
+        res.status(500).json({ success: false, msg: 'Error occurred during get reservations' });
     }
 
 };
@@ -51,6 +51,6 @@ exports.getReservation = async (req, res, next) => {
         res.status(200).json({ success: true, data: reservation });
 
     } catch (error) {
-        res.status(500).json({ success: false });
+        res.status(500).json({ success: false, msg: 'Error occured during get a reservations' });
     }
 }
