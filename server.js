@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 
 const mongoSanitize = require('express-mongo-sanitize');
@@ -24,6 +25,9 @@ const app = express();
 
 //Body parser
 app.use(express.json());
+
+//Cookie parser
+app.use(cookieParser());
 
 //More security
 app.use(mongoSanitize());
