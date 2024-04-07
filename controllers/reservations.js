@@ -32,3 +32,25 @@ exports.getReservations = async (req, res, next) => {
     }
 
 };
+
+exports.getReservation = async (req, res, next) => {
+    try {
+        const reservation = await Reservation.findById(req.params.id).populate({
+            path: 'restaurant',
+            select: 'name province telNo'
+        });
+
+        if (!reservation) {
+            return res.status(404).json({ success: false, msg: `No reservation with the id of ${req.params.id}` });
+        }
+
+        if (req.user.role !== 'admin' && req.user.id !== reservation.user.toString()) {
+            return res.status(401).json({ success: false, msg: `No reservation with the id of ${req.params.id}` });
+        }
+
+        res.status(200).json({ success: true, data: reservation });
+
+    } catch (error) {
+        res.status(500).json({ success: false });
+    }
+}
