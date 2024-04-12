@@ -1,8 +1,8 @@
-@startuml Manage Restaurant (GET ALL)
+@startuml Manage Restaurant (GET ONE)
 
 header Restaurant Reservation Sequence Diagram
 footer Page %page% of %lastpage%
-title "Manage Restaurant (GET ALL)"
+title "Manage Restaurant (GET ONE)"
 
 participant "Client" as client
 participant "<<javaScript>>\n:server" as server
@@ -11,14 +11,14 @@ participant "<<controllers>>\n:restaurants" as controllersRestaurants
 participant "<<model>>\n:Restaurant" as modelRestaurant
 database "<<MongoDB>>\n:restaurants" as RestaurantsDatabase
 
-' GET ALL
-client->server ++:req.get('/restaurants')
+' GET ONE
+client->server ++:req.get('/restaurants/:id')
 server->routerRestaurants ++:app.use('/restaurants',restaurants)
-routerRestaurants -> controllersRestaurants ++:getRestaurants()
-controllersRestaurants->modelRestaurant ++:find()
-modelRestaurant ->RestaurantsDatabase ++: RestaurantSchema
-RestaurantsDatabase --> modelRestaurant --: restaurants
-controllersRestaurants <-- modelRestaurant --:restaurants
+routerRestaurants -> controllersRestaurants ++:getRestaurant()
+controllersRestaurants->modelRestaurant ++:findById(req.params.id)
+modelRestaurant ->RestaurantsDatabase ++: RestaurantSchema 
+RestaurantsDatabase --> modelRestaurant --: restaurant
+controllersRestaurants <-- modelRestaurant --:restaurant
 controllersRestaurants->client --:response
 
 @enduml
