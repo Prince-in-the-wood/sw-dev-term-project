@@ -15,7 +15,7 @@ database "<<MongoDB>>\n:reservations" as ReservationsDatabase
 database "<<MongoDB>>\n:users" as UsersDatabase
 
 ' GET ONE
-client->server ++:req.get('/reservations')
+client->server ++:req.get('/reservations/:id')
 server->routerReservations ++:app.use('/reservations',reservations)
 routerReservations -> middlewareAuth ++:protect()
 middlewareAuth -> modelUser ++:findById(decodedToken.id)

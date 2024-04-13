@@ -16,8 +16,8 @@ database "<<MongoDB>>\n:reservations" as ReservationsDatabase
 database "<<MongoDB>>\n:users" as UsersDatabase
 
 ' GET ALL BY RESTAURANT ID
-client->server ++:req.get('/restaurants')
-server->routerRestaurants ++:app.use('/restaurant',restaurants)
+client->server ++:req.get('/restaurants/:restaurantId/reservations')
+server->routerRestaurants ++:app.use('/restaurants',restaurants)
 routerRestaurants->routerReservations ++:router.use('/:restaurantId/reservations', reservationRouter)
 routerReservations -> middlewareAuth ++:protect()
 middlewareAuth -> modelUser ++:findById(decodedToken.id)
