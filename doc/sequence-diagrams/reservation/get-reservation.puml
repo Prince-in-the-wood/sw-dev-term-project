@@ -20,8 +20,8 @@ server->routerReservations ++:app.use('/reservations',reservations)
 routerReservations -> middlewareAuth ++:protect()
 middlewareAuth -> modelUser ++:findById(decodedToken.id)
 modelUser -> UsersDatabase ++:UserSchema
-UsersDatabase -> modelUser --:user
-modelUser -> middlewareAuth --:user
+UsersDatabase --> modelUser --:user
+modelUser --> middlewareAuth --:user
 middlewareAuth -> controllersReservations ++:getReservations()
 controllersReservations -> modelReservation ++:findById(req.params.id)
 modelReservation ->ReservationsDatabase ++: ReservationSchema
