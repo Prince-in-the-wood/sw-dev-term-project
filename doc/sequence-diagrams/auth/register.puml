@@ -1,8 +1,8 @@
-@startuml Authentication (LOGIN)
+@startuml Authentication (REGISTER)
 
 header Restaurant Reservation Sequence Diagram
 footer Page %page% of %lastpage%
-title "Authentication (LOGIN)"
+title "Authentication (REGISTER)"
 
 participant "Client" as client
 participant "<<javaScript>>\n:server" as server
@@ -11,20 +11,16 @@ participant "<<controllers>>\n:auth" as controllersAuth
 participant "<<model>>\n:User" as modelUser
 database "<<MongoDB>>\n:users" as UsersDatabase
 
-' LOG IN
-client->server ++:req.post('/auth/login')
+' REGISTER
+client->server ++:req.post('/auth/register')
 server->routerAuth ++:app.use('/auth', auth)
-routerAuth -> controllersAuth ++:login()
-controllersAuth->modelUser ++:findOne({ email }).select('+password')
+routerAuth -> controllersAuth ++:register()
+controllersAuth->modelUser ++:create(req.body)
 modelUser ->UsersDatabase ++:UserSchema 
 UsersDatabase --> modelUser --:user
 controllersAuth <-- modelUser :user
-controllersAuth -> modelUser :matchPassword(password)
-modelUser --> controllersAuth: isMatch
-alt isMatch
-    controllersAuth ->  modelUser :getSignedJwtToken()
-    controllersAuth <-- modelUser --:signedJwtToken
-end
+controllersAuth ->  modelUser :getSignedJwtToken()
+controllersAuth <-- modelUser --:signedJwtToken
 controllersAuth->client --:response
 
 @enduml

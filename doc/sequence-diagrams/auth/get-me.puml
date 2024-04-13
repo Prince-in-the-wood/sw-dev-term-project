@@ -1,30 +1,30 @@
-@startuml Authentication (LOGIN)
+@startuml Authentication (GET ME)
 
 header Restaurant Reservation Sequence Diagram
 footer Page %page% of %lastpage%
-title "Authentication (LOGIN)"
+title "Authentication (GET ME)"
 
 participant "Client" as client
 participant "<<javaScript>>\n:server" as server
 participant "<<router>>\n:auth" as routerAuth
+participant "<<middleware>>\n:auth" as middlewareAuth
 participant "<<controllers>>\n:auth" as controllersAuth
 participant "<<model>>\n:User" as modelUser
 database "<<MongoDB>>\n:users" as UsersDatabase
 
-' LOG IN
-client->server ++:req.post('/auth/login')
+' GET ME
+client->server ++:req.get('/auth/getMe')
 server->routerAuth ++:app.use('/auth', auth)
-routerAuth -> controllersAuth ++:login()
-controllersAuth->modelUser ++:findOne({ email }).select('+password')
+routerAuth -> middlewareAuth ++:protect()
+middlewareAuth -> modelUser ++:findById(decodedToken.id)
+modelUser -> UsersDatabase ++:UserSchema
+UsersDatabase --> modelUser --:user
+modelUser --> middlewareAuth --:user
+middlewareAuth -> controllersAuth ++:getMe()
+controllersAuth->modelUser ++:findById(req.user.id)
 modelUser ->UsersDatabase ++:UserSchema 
 UsersDatabase --> modelUser --:user
-controllersAuth <-- modelUser :user
-controllersAuth -> modelUser :matchPassword(password)
-modelUser --> controllersAuth: isMatch
-alt isMatch
-    controllersAuth ->  modelUser :getSignedJwtToken()
-    controllersAuth <-- modelUser --:signedJwtToken
-end
+controllersAuth <-- modelUser --:user
 controllersAuth->client --:response
 
 @enduml
