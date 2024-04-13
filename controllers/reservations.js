@@ -4,10 +4,18 @@ exports.getReservations = async (req, res, next) => {
     let query;
 
     if (req.user.role !== 'admin') {
-        query = Reservation.find({ user: req.user.id }).populate({
-            path: 'restaurant',
-            select: 'name province telNo'
-        });
+        if (req.params.restaurantId) {
+            query = Reservation.find({ user: req.user.id, restaurant: req.params.restaurantId }).populate({
+                path: 'restaurant',
+                select: 'name province telNo'
+            });
+        } else {
+            query = Reservation.find({ user: req.user.id }).populate({
+                path: 'restaurant',
+                select: 'name province telNo'
+            });
+        }
+
     } else {
         if (req.params.restaurantId) {
             query = Reservation.find({ restaurant: req.params.restaurantId }).populate({
