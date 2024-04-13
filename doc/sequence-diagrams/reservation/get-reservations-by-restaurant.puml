@@ -2,10 +2,11 @@
 
 header Restaurant Reservation Sequence Diagram
 footer Page %page% of %lastpage%
-title "Manage Reservation (GET ALL)"
+title "Manage Reservation (GET ALL BY RESTAURANT ID)"
 
 participant "Client" as client
 participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:restaurants" as routerRestaurants
 participant "<<router>>\n:reservations" as routerReservations
 participant "<<middleware>>\n:auth" as middlewareAuth
 participant "<<controllers>>\n:reservations" as controllersReservations
@@ -14,9 +15,10 @@ participant "<<model>>\n:User" as modelUser
 database "<<MongoDB>>\n:reservations" as ReservationsDatabase
 database "<<MongoDB>>\n:users" as UsersDatabase
 
-' GET ALL
-client->server ++:req.get('/reservations')
-server->routerReservations ++:app.use('/reservations',reservations)
+' GET ALL BY RESTAURANT ID
+client->server ++:req.get('/restaurants')
+server->routerRestaurants ++:app.use('/restaurant',restaurants)
+routerRestaurants->routerReservations ++:router.use('/:restaurantId/reservations', reservationRouter)
 routerReservations -> middlewareAuth ++:protect()
 middlewareAuth -> modelUser ++:findById(decodedToken.id)
 modelUser -> UsersDatabase ++:UserSchema
@@ -25,9 +27,9 @@ modelUser -> middlewareAuth --:user
 middlewareAuth -> controllersReservations ++:getReservations()
 
 alt req.user.role !== 'admin'
-    controllersReservations->modelReservation ++:find({ user: req.user.id })
+    controllersReservations->modelReservation ++:find({ user: req.user.id, restaurant: req.params.restaurantId })
 else
-    controllersReservations->modelReservation :find()
+    controllersReservations->modelReservation :find({ restaurant: req.params.restaurantId })
 end
 
 modelReservation ->ReservationsDatabase ++: ReservationSchema

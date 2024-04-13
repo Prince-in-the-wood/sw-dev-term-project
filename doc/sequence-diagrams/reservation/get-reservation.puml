@@ -2,7 +2,7 @@
 
 header Restaurant Reservation Sequence Diagram
 footer Page %page% of %lastpage%
-title "Manage Reservation (GET ALL)"
+title "Manage Reservation (GET ONE)"
 
 participant "Client" as client
 participant "<<javaScript>>\n:server" as server
@@ -14,7 +14,7 @@ participant "<<model>>\n:User" as modelUser
 database "<<MongoDB>>\n:reservations" as ReservationsDatabase
 database "<<MongoDB>>\n:users" as UsersDatabase
 
-' GET ALL
+' GET ONE
 client->server ++:req.get('/reservations')
 server->routerReservations ++:app.use('/reservations',reservations)
 routerReservations -> middlewareAuth ++:protect()
@@ -23,13 +23,7 @@ modelUser -> UsersDatabase ++:UserSchema
 UsersDatabase -> modelUser --:user
 modelUser -> middlewareAuth --:user
 middlewareAuth -> controllersReservations ++:getReservations()
-
-alt req.user.role !== 'admin'
-    controllersReservations->modelReservation ++:find({ user: req.user.id })
-else
-    controllersReservations->modelReservation :find()
-end
-
+controllersReservations -> modelReservation ++:findById(req.params.id)
 modelReservation ->ReservationsDatabase ++: ReservationSchema
 ReservationsDatabase --> modelReservation --: reservations
 controllersReservations <-- modelReservation --:reservations
