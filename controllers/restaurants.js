@@ -85,12 +85,24 @@ exports.getRestaurant = async (req, res, next) => {
 };
 
 exports.createRestaurant = async (req, res, next) => {
+  if (req.body.maxCapacity < 1) {
+    return res.status(400).json({
+      success: false,
+      message: `The user with ID ${req.user.id} cannot create a restaurant with non-positive number of tables`,
+    });
+  }
   const restaurant = await Restaurant.create(req.body);
   res.status(201).json({ success: true, data: restaurant });
 };
 
 exports.updateRestaurant = async (req, res, next) => {
   try {
+    if (req.body.maxCapacity < 1) {
+      return res.status(400).json({
+        success: false,
+        message: `The user with ID ${req.user.id} cannot update a restaurant with non-positive number of tables`,
+      });
+    }
     const restaurant = await Restaurant.findByIdAndUpdate(
       req.params.id,
       req.body,
