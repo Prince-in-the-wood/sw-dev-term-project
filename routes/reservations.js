@@ -3,6 +3,8 @@ const {
   getReservations,
   getReservation,
   addReservation,
+  updateReservation,
+  deleteReservation,
 } = require("../controllers/reservations");
 const { protect, authorize } = require("../middleware/auth");
 
@@ -12,6 +14,10 @@ router
   .route("/")
   .get(protect, getReservations)
   .post(protect, authorize("user"), addReservation);
-router.route("/:id").get(protect, getReservation);
+router
+  .route("/:id")
+  .get(protect, getReservation)
+  .put(protect, authorize("admin", "user"), updateReservation)
+  .delete(protect, authorize("admin", "user"), deleteReservation);
 
 module.exports = router;
