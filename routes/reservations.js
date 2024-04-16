@@ -2,7 +2,7 @@ const express = require("express");
 const {
   getReservations,
   getReservation,
-  addReservation,
+  createReservation,
   updateReservation,
   deleteReservation,
 } = require("../controllers/reservations");
@@ -13,7 +13,7 @@ const router = express.Router({ mergeParams: true });
 router
   .route("/")
   .get(protect, getReservations)
-  .post(protect, authorize("user"), addReservation);
+  .post(protect, authorize("user"), createReservation);
 router
   .route("/:id")
   .get(protect, getReservation)
