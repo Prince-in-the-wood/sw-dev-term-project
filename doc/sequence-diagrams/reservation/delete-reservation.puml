@@ -1,0 +1,36 @@
+@startuml Manage Reservation (DELETE)
+
+header Restaurant Reservation Sequence Diagram
+footer Page %page% of %lastpage%
+title "Manage Reservation (DELETE)"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:reservations" as routerReservations
+participant "<<middleware>>\n:auth" as middlewareAuth
+participant "<<controllers>>\n:reservations" as controllersReservations
+participant "<<model>>\n:Reservation" as modelReservation
+participant "<<model>>\n:User" as modelUser
+database "<<MongoDB>>\n:reservations" as ReservationsDatabase
+database "<<MongoDB>>\n:users" as UsersDatabase
+
+' DELETE
+client->server ++:req.delete('/reservations/:id')
+server->routerReservations ++:app.use('/reservations',reservations)
+routerReservations -> middlewareAuth ++:protect()
+middlewareAuth -> modelUser ++:findById(decodedToken.id)
+modelUser -> UsersDatabase ++:UserSchema
+UsersDatabase --> modelUser --:user
+modelUser --> middlewareAuth --:user
+middlewareAuth -> controllersReservations ++:deleteReservation()
+
+controllersReservations -> modelReservation ++:findById(req.params.id)
+modelReservation ->ReservationsDatabase ++: ReservationSchema
+ReservationsDatabase --> modelReservation --: reservation
+controllersReservations <-- modelReservation --:reservation
+
+controllersReservations->ReservationsDatabase ++:reservation.deleteOne()
+controllersReservations <-- ReservationsDatabase --: return
+controllersReservations->client --:return
+
+@enduml

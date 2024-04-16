@@ -1,0 +1,52 @@
+@startuml Manage Reservation (PUT)
+
+header Restaurant Reservation Sequence Diagram
+footer Page %page% of %lastpage%
+title "Manage Reservation (PUT)"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:reservations" as routerReservations
+participant "<<middleware>>\n:auth" as middlewareAuth
+participant "<<controllers>>\n:reservations" as controllersReservations
+participant "<<model>>\n:Reservation" as modelReservation
+participant "<<model>>\n:Restaurant" as modelRestaurant
+participant "<<model>>\n:User" as modelUser
+database "<<MongoDB>>\n:reservations" as ReservationsDatabase
+database "<<MongoDB>>\n:restaurants" as RestaurantsDatabase
+database "<<MongoDB>>\n:users" as UsersDatabase
+
+' PUT
+client->server ++:req.put('/reservations/:id')
+server->routerReservations ++:app.use('/reservations',reservations)
+routerReservations -> middlewareAuth ++:protect()
+middlewareAuth -> modelUser ++:findById(decodedToken.id)
+modelUser -> UsersDatabase ++:UserSchema
+UsersDatabase --> modelUser --:user
+modelUser --> middlewareAuth --:user
+middlewareAuth -> controllersReservations ++:updateReservation()
+
+controllersReservations -> modelReservation ++:findById(req.params.id)
+modelReservation -> ReservationsDatabase ++:ReservationSchema 
+ReservationsDatabase --> modelReservation --:reservation
+controllersReservations <-- modelReservation --:reservation
+
+alt req.body.restaurant
+    controllersReservations -> modelRestaurant ++:findById(req.body.restaurant)
+    modelRestaurant -> RestaurantsDatabase ++:RestaurantSchema
+    RestaurantsDatabase --> modelRestaurant --:restaurant
+    controllersReservations <-- modelRestaurant --:restaurant
+end
+
+controllersReservations -> modelReservation ++:find({ restaurant: restaurant.id, reserveDate: req.body.reserveDate ?? reservation.reserveDate })
+modelReservation -> ReservationsDatabase ++:ReservationSchema 
+ReservationsDatabase --> modelReservation --:reservations
+controllersReservations <-- modelReservation --:reservations
+
+controllersReservations -> modelReservation ++:findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+modelReservation -> ReservationsDatabase ++:ReservationSchema 
+ReservationsDatabase --> modelReservation --:reservation
+controllersReservations <-- modelReservation --:reservation
+controllersReservations -> client --:response
+
+@enduml
