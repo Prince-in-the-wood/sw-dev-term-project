@@ -6,13 +6,13 @@ package "RestaurantReservation"{
     ' Restaurant 
     class "<<Resource>>\nRestaurants" as ResourceRestaurants{
         <<GET>> +getRestaurants():Restaurant
-        ' <<POST>> +createRestaurant():Restaurant
+        <<POST>> +createRestaurant():Restaurant
     }
 
     class "<<Resource>>\nRestaurant" as ResourceRestaurant {
         <<GET>> +getRestaurant(): Restaurant
-        ' <<PUT>> +updateRestaurant(): Restaurant
-        ' <<DELETE>> +deleteRestaurant(): void
+        <<PUT>> +updateRestaurant(): Restaurant
+        <<DELETE>> +deleteRestaurant(): void
     }
 
     class "<<Representation>>\nRestaurant" as RepresentationRestaurant {
@@ -30,13 +30,13 @@ package "RestaurantReservation"{
     ' Reservation 
     class "<<Resource>>\nReservations" as ResourceReservations{
         <<GET>> +getReservations():Reservation
-        ' <<POST>> +createReservation():Reservation
+        <<POST>> +createReservation():Reservation
     }
 
     class "<<Resource>>\nReservation" as ResourceReservation {
         <<GET>> +getReservation(): Reservation
-        ' <<PUT>> +updateReservation(): Reservation
-        ' <<DELETE>> +deleteReservation(): void
+        <<PUT>> +updateReservation(): Reservation
+        <<DELETE>> +deleteReservation(): void
     }
 
     class "<<Representation>>\nReservation" as RepresentationReservation {
