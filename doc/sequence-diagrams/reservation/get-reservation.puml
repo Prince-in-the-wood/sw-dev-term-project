@@ -1,4 +1,4 @@
-@startuml Manage Reservation (GET ALL)
+@startuml Manage Reservation (GET ONE)
 
 header Restaurant Reservation Sequence Diagram
 footer Page %page% of %lastpage%
@@ -23,7 +23,7 @@ modelUser -> UsersDatabase ++:UserSchema
 UsersDatabase --> modelUser --:user
 modelUser --> middlewareAuth --:user
 middlewareAuth -> routerReservations --:next()
-routerReservations -> controllersReservations ++:getReservations()
+routerReservations -> controllersReservations ++:getReservation()
 controllersReservations -> modelReservation ++:findById(req.params.id)
 modelReservation ->ReservationsDatabase ++: ReservationSchema
 ReservationsDatabase --> modelReservation --: reservations
