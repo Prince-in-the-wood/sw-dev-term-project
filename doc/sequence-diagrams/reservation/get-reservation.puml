@@ -22,7 +22,8 @@ middlewareAuth -> modelUser ++:findById(decodedToken.id)
 modelUser -> UsersDatabase ++:UserSchema
 UsersDatabase --> modelUser --:user
 modelUser --> middlewareAuth --:user
-middlewareAuth -> controllersReservations ++:getReservations()
+middlewareAuth -> routerReservations --:next()
+routerReservations -> controllersReservations ++:getReservations()
 controllersReservations -> modelReservation ++:findById(req.params.id)
 modelReservation ->ReservationsDatabase ++: ReservationSchema
 ReservationsDatabase --> modelReservation --: reservations

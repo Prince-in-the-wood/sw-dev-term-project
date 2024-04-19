@@ -22,7 +22,8 @@ middlewareAuth -> modelUser ++:findById(decodedToken.id)
 modelUser -> UsersDatabase ++:UserSchema
 UsersDatabase --> modelUser --:user
 modelUser --> middlewareAuth --:user
-middlewareAuth -> controllersReservations ++:getReservations()
+middlewareAuth -> routerReservations --:next()
+routerReservations -> controllersReservations ++:getReservations()
 
 alt req.user.role !== 'admin'
     controllersReservations->modelReservation ++:find({ user: req.user.id })

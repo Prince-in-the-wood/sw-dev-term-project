@@ -20,7 +20,8 @@ middlewareAuth -> modelUser ++:findById(decodedToken.id)
 modelUser -> UsersDatabase ++:UserSchema
 UsersDatabase --> modelUser --:user
 modelUser --> middlewareAuth --:user
-middlewareAuth -> controllersAuth ++:getMe()
+middlewareAuth -> routerAuth --: next()
+routerAuth -> controllersAuth ++:getMe()
 controllersAuth->modelUser ++:findById(req.user.id)
 modelUser ->UsersDatabase ++:UserSchema 
 UsersDatabase --> modelUser --:user

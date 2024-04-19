@@ -22,7 +22,10 @@ middlewareAuth -> modelUser ++:findById(decodedToken.id)
 modelUser -> UsersDatabase ++:UserSchema
 UsersDatabase --> modelUser --:user
 modelUser --> middlewareAuth --:user
-middlewareAuth -> controllersReservations ++:deleteReservation()
+middlewareAuth -> routerReservations --:next()
+routerReservations -> middlewareAuth ++:authorize("admin", "user")
+middlewareAuth -> routerReservations --:next()
+routerReservations -> controllersReservations ++:deleteReservation()
 
 controllersReservations -> modelReservation ++:findById(req.params.id)
 modelReservation ->ReservationsDatabase ++: ReservationSchema

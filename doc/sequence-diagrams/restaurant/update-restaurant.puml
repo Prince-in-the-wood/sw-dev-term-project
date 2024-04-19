@@ -22,7 +22,10 @@ middlewareAuth -> modelUser ++:findById(decodedToken.id)
 modelUser -> UsersDatabase ++:UserSchema
 UsersDatabase --> modelUser --:user
 modelUser --> middlewareAuth --:user
-middlewareAuth -> controllersRestaurants ++:updateRestaurant()
+middlewareAuth -> routerRestaurants --:next()
+routerRestaurants -> middlewareAuth ++:authorize("admin")
+middlewareAuth -> routerRestaurants --:next()
+routerRestaurants -> controllersRestaurants ++:updateRestaurant()
 controllersRestaurants -> modelRestaurant ++:findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
 modelRestaurant -> RestaurantsDatabase ++:restaurantSchema 
 RestaurantsDatabase --> modelRestaurant --:restaurant

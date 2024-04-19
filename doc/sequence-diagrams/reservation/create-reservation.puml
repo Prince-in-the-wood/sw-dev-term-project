@@ -24,7 +24,10 @@ middlewareAuth -> modelUser ++:findById(decodedToken.id)
 modelUser -> UsersDatabase ++:UserSchema
 UsersDatabase --> modelUser --:user
 modelUser --> middlewareAuth --:user
-middlewareAuth -> controllersReservations ++:createReservation()
+middlewareAuth -> routerReservations --:next()
+routerReservations -> middlewareAuth ++:authorize("user")
+middlewareAuth -> routerReservations --:next()
+routerReservations -> controllersReservations ++:createReservation()
 
 controllersReservations -> modelRestaurant ++:findById(req.body.restaurant)
 modelRestaurant -> RestaurantsDatabase ++:RestaurantSchema 
