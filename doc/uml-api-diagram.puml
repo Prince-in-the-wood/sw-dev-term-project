@@ -1,4 +1,4 @@
-@startuml
+@startuml UML API DIAGRAM
 left to right direction
 package "RestaurantReservation"{
     class "<<Application>>\nRestaurantReservationService" as RestaurantReservationService{}
